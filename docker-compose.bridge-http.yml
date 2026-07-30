@@ -1,0 +1,36 @@
+# HTTP/SSE MCP bridge container for Odysseus (or any HTTP MCP client).
+#
+# Use this alongside docker-compose.api.yml. The bridge joins the shared
+# `godmod3` Docker network so it can reach the API at http://godmod3-api:7860.
+#
+#   docker compose -f docker-compose.bridge-http.yml up -d --build
+#
+# Odysseus config:
+#   {
+#     "name": "godmod3",
+#     "transport": "http",
+#     "url": "http://localhost:3001/sse"
+#   }
+
+services:
+  godmod3-mcp-http:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: godmod3-mcp-http
+    ports:
+      - "3001:3001"
+    environment:
+      - GODMOD3_BASE_URL=http://godmod3-api:7860
+      - GODMOD3_API_KEY=${GODMOD3_API_KEY:-}
+      - GODMOD3_MCP_TRANSPORT=http
+      - GODMOD3_MCP_HTTP_PORT=3001
+    command: ["--transport", "http", "--port", "3001"]
+    restart: unless-stopped
+    networks:
+      - godmod3
+
+networks:
+  godmod3:
+    name: godmod3
+    driver: bridge

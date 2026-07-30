@@ -45,9 +45,11 @@ The package supports both `stdio` and `HTTP/SSE` MCP transports using the offici
 ├── pyproject.toml            # Package metadata, dependencies, build config, pytest options
 ├── requirements.txt          # Runtime deps (httpx + official `mcp` SDK)
 ├── requirements-http.txt     # Deprecated alias; `mcp` is now in requirements.txt
-├── Dockerfile                # Container image for the bridge
-├── docker-compose.yml        # Full stack: godmod3-api + godmod3-mcp
-├── .env.example              # Documented environment variables
+├── Dockerfile                     # Container image for the bridge
+├── docker-compose.yml             # Full stack: includes API + HTTP bridge
+├── docker-compose.api.yml         # G0DM0D3 API container only
+├── docker-compose.bridge-http.yml # HTTP/SSE MCP bridge container only
+├── .env.example                   # Documented environment variables
 ├── README.md                 # Human-facing setup guide
 ├── plan.md                   # Original implementation plan
 ├── plan.html                 # Interactive rendered version of plan.md
@@ -92,13 +94,32 @@ godmod3-mcp --transport stdio
 
 ### Run with Docker Compose
 
+The stack is split into two compose files so you can manage the API and the HTTP bridge independently.
+
+Start only the G0DM0D3 API container (for use with a local stdio bridge for Hermes):
+
 ```bash
 cp .env.example .env
 # edit .env as needed
+docker compose -f docker-compose.api.yml up -d --build
+```
+
+Start the HTTP/SSE MCP bridge container (for Odysseus):
+
+```bash
+docker compose -f docker-compose.bridge-http.yml up -d --build
+```
+
+Or start both at once:
+
+```bash
 docker compose up -d --build
 ```
 
-`docker-compose.yml` builds the upstream G0DM0D3 API as `godmod3-api` (port 7860) and this bridge as `godmod3-mcp` (port 3001).
+- `docker-compose.api.yml` builds the upstream G0DM0D3 API as `godmod3-api` (host port 7860).
+- `docker-compose.bridge-http.yml` builds this bridge as `godmod3-mcp-http` (host port 3001).
+- The two containers share a Docker network named `godmod3`, so the bridge reaches the API at `http://godmod3-api:7860`.
+- A local stdio bridge on the host reaches the API at `http://localhost:7860`.
 
 ## Configuration
 

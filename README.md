@@ -13,9 +13,45 @@ This package delegates 100% to a self-hosted G0DM0D3 API and exposes every flags
 
 ## Quick start
 
-### 1. Start the G0DM0D3 API
+### Recommended deployment
 
-Option A — run upstream directly:
+Run the upstream G0DM0D3 API as a container, run a local stdio bridge for Hermes, and run a separate HTTP bridge container for Odysseus.
+
+#### 1. Start the G0DM0D3 API container
+
+```bash
+cp .env.example .env
+# edit .env with optional keys
+docker compose -f docker-compose.api.yml up -d --build
+```
+
+The API is available at `http://localhost:7860` from the host and at `http://godmod3-api:7860` from containers on the shared `godmod3` network.
+
+#### 2. Install the bridge locally for Hermes (stdio)
+
+```bash
+pip install -e .
+```
+
+This installs the bridge and the console script `godmod3-mcp`.
+
+#### 3. Start the HTTP bridge container for Odysseus
+
+```bash
+docker compose -f docker-compose.bridge-http.yml up -d --build
+```
+
+Odysseus connects to `http://localhost:3001/sse`.
+
+#### 4. Verify
+
+```bash
+python -m godmod3_mcp.server --test
+```
+
+### Alternative: run the API directly
+
+If you prefer not to containerize the API:
 
 ```bash
 git clone https://github.com/elder-plinius/G0DM0D3.git
@@ -24,41 +60,13 @@ npm install
 npm run api
 ```
 
-Option B — use Docker Compose:
+### Alternative: full stack at once
 
 ```bash
-cp .env.example .env
-# edit .env with optional keys
 docker compose up -d --build
 ```
 
-### 2. Install the bridge
-
-```bash
-pip install -e .
-```
-
-The package requires the official `mcp` Python SDK. Both `stdio` and `HTTP/SSE` transports use it.
-
-### 3. Run
-
-**stdio (default):**
-
-```bash
-python -m godmod3_mcp.server
-```
-
-**HTTP/SSE:**
-
-```bash
-python -m godmod3_mcp.server --transport http --port 3001
-```
-
-### 4. Verify
-
-```bash
-python -m godmod3_mcp.server --test
-```
+This is equivalent to starting both `docker-compose.api.yml` and `docker-compose.bridge-http.yml` together.
 
 ## Configuration
 
@@ -106,13 +114,13 @@ Via the MCP admin UI or API:
 }
 ```
 
-Or via HTTP:
+Or via the HTTP bridge container:
 
 ```json
 {
   "name": "godmod3",
   "transport": "http",
-  "url": "http://godmod3-mcp:3001/sse"
+  "url": "http://localhost:3001/sse"
 }
 ```
 
@@ -124,12 +132,14 @@ cp -r skills/odysseus/godmod3 /path/to/odysseus/data/skills/
 
 ## Connect to Hermes Agent
 
+Hermes launches the bridge as a local stdio subprocess. Make sure you installed the bridge with `pip install -e .` and that the API container is exposing port `7860`.
+
 Add to your Hermes MCP config (file path depends on install; often `~/.hermes/mcp_servers.json` or via `hermes config`):
 
 ```json
 {
   "godmod3": {
-    "command": "python -m godmod3_mcp.server",
+    "command": "godmod3-mcp",
     "env": {
       "GODMOD3_BASE_URL": "http://localhost:7860",
       "GODMOD3_API_KEY": "optional-key"

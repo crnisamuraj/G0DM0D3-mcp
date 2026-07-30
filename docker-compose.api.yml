@@ -1,0 +1,40 @@
+# G0DM0D3 API container only.
+#
+# Use this if you want the upstream API running as a managed container
+# (e.g., for Podman autostart/autorestart) while running the MCP bridge
+# separately — either in stdio mode for Hermes on the host, or as an
+# HTTP bridge container via docker-compose.bridge-http.yml.
+#
+#   docker compose -f docker-compose.api.yml up -d --build
+#
+# The API is reachable from the host at http://localhost:7860 and from
+# other containers on the shared `godmod3` network at http://godmod3-api:7860.
+
+services:
+  godmod3-api:
+    build:
+      context: https://github.com/elder-plinius/G0DM0D3.git#main
+      dockerfile: Dockerfile
+    container_name: godmod3-api
+    ports:
+      - "7860:7860"
+    environment:
+      - PORT=7860
+      - GODMODE_API_KEY=${GODMODE_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - HF_TOKEN=${HF_TOKEN:-}
+      - HF_DATASET_REPO=${HF_DATASET_REPO:-}
+    restart: unless-stopped
+    networks:
+      - godmod3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+networks:
+  godmod3:
+    name: godmod3
+    driver: bridge

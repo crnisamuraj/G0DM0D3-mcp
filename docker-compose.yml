@@ -1,40 +1,17 @@
-services:
-  godmod3-api:
-    build:
-      context: https://github.com/elder-plinius/G0DM0D3.git#main
-      dockerfile: Dockerfile
-    container_name: godmod3-api
-    ports:
-      - "7860:7860"
-    environment:
-      - PORT=7860
-      # Uncomment and fill to protect your API:
-      # - GODMODE_API_KEY=${GODMODE_API_KEY}
-      # - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      # - HF_TOKEN=${HF_TOKEN}
-      # - HF_DATASET_REPO=${HF_DATASET_REPO}
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7860/v1/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
+# Full stack: G0DM0D3 API + HTTP/SSE MCP bridge.
+#
+# This file simply includes the two split compose files so you can still
+# start everything at once if you prefer:
+#
+#   docker compose up -d --build
+#
+# To manage the API and the HTTP bridge independently (e.g., run only the
+# API container and use a local stdio bridge for Hermes), use the separate
+# compose files directly:
+#
+#   docker compose -f docker-compose.api.yml up -d --build
+#   docker compose -f docker-compose.bridge-http.yml up -d --build
 
-  godmod3-mcp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: godmod3-mcp
-    ports:
-      - "3001:3001"
-    environment:
-      - GODMOD3_BASE_URL=http://godmod3-api:7860
-      - GODMOD3_API_KEY=${GODMODE_API_KEY}
-      - GODMOD3_MCP_TRANSPORT=http
-      - GODMOD3_MCP_HTTP_PORT=3001
-    command: ["--transport", "http", "--port", "3001"]
-    depends_on:
-      godmod3-api:
-        condition: service_healthy
-    restart: unless-stopped
+include:
+  - docker-compose.api.yml
+  - docker-compose.bridge-http.yml
