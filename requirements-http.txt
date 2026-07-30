@@ -1,0 +1,2 @@
+# Deprecated: mcp is now a normal runtime dependency.
+# Use requirements.txt instead.

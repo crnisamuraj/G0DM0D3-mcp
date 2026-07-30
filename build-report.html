@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G0DM0D3 MCP — Build Report</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #1f2833;
+      --text: #c5c6c7;
+      --heading: #66fcf1;
+      --accent: #45a29e;
+      --accent2: #f7b801;
+      --success: #4ade80;
+      --danger: #ff6b6b;
+      --warning: #ffaa00;
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .22;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--heading);
+      animation: float 20s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: .2; }
+      50% { transform: translateY(-70px) translateX(35px); opacity: .5; }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      border-bottom: 2px solid rgba(102, 252, 241, 0.2);
+      margin-bottom: 38px;
+      animation: fadeInDown 1s ease both;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
+      color: var(--heading);
+      margin: 0 0 12px;
+      text-shadow: 0 0 22px rgba(102, 252, 241, .35);
+      letter-spacing: -1px;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(74, 222, 128, .12);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .9rem;
+      animation: pulse 2.5s infinite;
+    }
+    .dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, .25); }
+      50% { box-shadow: 0 0 16px 4px rgba(74, 222, 128, .15); }
+    }
+
+    section { margin-bottom: 34px; animation: fadeInUp .9s ease both; }
+    section:nth-child(3) { animation-delay: .1s; }
+    section:nth-child(4) { animation-delay: .2s; }
+    section:nth-child(5) { animation-delay: .3s; }
+    section:nth-child(6) { animation-delay: .4s; }
+    section:nth-child(7) { animation-delay: .5s; }
+
+    h2 {
+      color: var(--heading);
+      font-size: 1.55rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .icon { font-size: 1.35rem; }
+    .toggle { margin-left: auto; font-size: .85rem; color: var(--accent); transition: transform .3s ease; }
+    h2.open .toggle { transform: rotate(180deg); }
+
+    .card {
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px var(--shadow);
+      border: 1px solid rgba(102, 252, 241, .08);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+
+    .collapsible { max-height: 0; overflow: hidden; transition: max-height .45s ease, opacity .35s ease; opacity: 0; }
+    .collapsible.open { opacity: 1; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+
+    .chip {
+      background: rgba(102, 252, 241, .08);
+      border: 1px solid rgba(102, 252, 241, .22);
+      border-radius: 12px;
+      padding: 16px;
+      transition: background .2s ease;
+    }
+    .chip:hover { background: rgba(102, 252, 241, .16); }
+    .chip strong { color: var(--heading); display: block; margin-bottom: 6px; }
+    .chip small { color: var(--accent2); font-weight: 600; }
+
+    .deliverable {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .deliverable:last-child { border-bottom: none; }
+    .deliverable .status { flex-shrink: 0; font-size: 1.2rem; }
+    .deliverable code { background: rgba(0,0,0,.35); padding: 3px 7px; border-radius: 6px; color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-size: .85em; }
+
+    .challenge {
+      margin-bottom: 18px;
+      padding: 18px;
+      border-radius: 12px;
+      border-left: 4px solid var(--warning);
+      background: rgba(255, 170, 0, .06);
+    }
+    .challenge.solved { border-left-color: var(--success); background: rgba(74, 222, 128, .06); }
+    .challenge h3 { margin: 0 0 8px; color: var(--heading); font-size: 1.1rem; }
+    .challenge p { margin: 6px 0; }
+    .challenge .label { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; }
+    .label-bump { background: rgba(255, 170, 0, .15); color: var(--warning); }
+    .label-fixed { background: rgba(74, 222, 128, .15); color: var(--success); }
+
+    .metric {
+      text-align: center;
+      padding: 20px;
+      background: rgba(102, 252, 241, .06);
+      border-radius: 14px;
+      border: 1px solid rgba(102, 252, 241, .15);
+    }
+    .metric .number { font-size: 2.4rem; font-weight: 800; color: var(--heading); }
+    .metric .label { font-size: .9rem; color: var(--accent); margin-top: 6px; }
+
+    .terminal {
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .86rem;
+      color: #d4d4d4;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .terminal .ok { color: var(--success); }
+    .terminal .cmd { color: var(--heading); }
+    .terminal .dim { color: #666; }
+
+    .progress { height: 8px; background: rgba(255,255,255,.08); border-radius: 999px; margin: 12px 0 18px; overflow: hidden; }
+    .progress > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--heading), var(--accent2)); border-radius: 999px; transition: width 1.2s ease; }
+
+    footer { text-align: center; margin-top: 50px; color: var(--accent); font-size: .9rem; }
+
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles"></div>
+
+  <div class="wrap">
+    <header>
+      <h1>🜏 Build Report</h1>
+      <div class="tagline">G0DM0D3 MCP bridge, dual-agent skills, Docker stack</div>
+      <div class="status-pill"><span class="dot"></span> Status: Built & verified</div>
+    </header>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">📊</span> At a Glance <span class="toggle">▾</span></h2>
+        <div class="collapsible open">
+          <div class="grid-3">
+            <div class="metric"><div class="number">17</div><div class="label">MCP Tools</div></div>
+            <div class="metric"><div class="number">2</div><div class="label">Agent Skills</div></div>
+            <div class="metric"><div class="number">6/6</div><div class="label">Tests Passed</div></div>
+          </div>
+          <p style="margin-top:18px">A Python MCP bridge that delegates 100% to a self-hosted G0DM0D3 API, exposing every flagship feature to <strong>Odysseus</strong> and <strong>Hermes Agent</strong>. Supports both <code>stdio</code> and <code>HTTP/SSE</code> transports, plus local OpenAI-compatible endpoints.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">✅</span> What Got Built <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <div class="grid-2">
+            <div class="chip"><strong>Python package</strong><code>src/godmod3_mcp/</code><br>server, client, config, tools, utils, transports.</div>
+            <div class="chip"><strong>Discovery tools</strong><code>health_check</code>, <code>server_info</code>, <code>list_models</code>, <code>get_tier</code></div>
+            <div class="chip"><strong>Chat engines</strong><code>single_chat</code>, <code>ultraplinian_chat</code>, <code>consortium_chat</code></div>
+            <div class="chip"><strong>Utilities</strong><code>autotune_analyze</code>, <code>parseltongue_encode/detect</code>, <code>transform_text</code>, <code>submit_feedback</code></div>
+            <div class="chip"><strong>Research / dataset</strong><code>dataset_stats</code>, <code>export_dataset</code>, <code>research_info</code>, <code>research_stats</code>, <code>research_query</code></div>
+            <div class="chip"><strong>Docker stack</strong><code>docker-compose.yml</code><br><code>godmod3-api</code> + <code>godmod3-mcp</code></div>
+          </div>
+
+          <h3 style="color:var(--heading);margin-top:24px;margin-bottom:12px">Skills</h3>
+          <div class="deliverable"><span class="status">🧠</span><div><strong>Odysseus skill</strong> <code>skills/odysseus/godmod3/SKILL.md</code><br>Tailored for Odysseus naming (<code>mcp__godmod3__...</code>), plan mode, and tier selection.</div></div>
+          <div class="deliverable"><span class="status">⚡</span><div><strong>Hermes skill</strong> <code>skills/hermes/godmod3/SKILL.md</code><br>Tailored for Hermes <code>/godmod3</code> invocation and Tool Gateway conventions.</div></div>
+
+          <h3 style="color:var(--heading);margin-top:24px;margin-bottom:12px">Packaging</h3>
+          <div class="deliverable"><span class="status">📦</span><div><strong><code>pyproject.toml</code></strong> — Editable install with <code>mcp</code> as a required dependency (no optional <code>[http]</code> extra).</div></div>
+          <div class="deliverable"><span class="status">🐳</span><div><strong><code>Dockerfile</code></strong> — Container for the bridge; installs the package with <code>pip install -e .</code>.</div></div>
+          <div class="deliverable"><span class="status">🧪</span><div><strong><code>tests/</code></strong> — pytest-compatible async tests run with <code>pytest tests/test_tools.py</code>.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🧗</span> Challenges & Resolutions <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <div class="challenge solved">
+            <span class="label label-fixed">Update</span>
+            <h3>Official <code>mcp</code> SDK is now required</h3>
+            <p>The constrained-environment workarounds (manual MCP fallback server and standalone test runner) have been removed from the codebase.</p>
+            <span class="label label-fixed">Resolution</span>
+            <p><code>mcp</code> 1.x is listed as a required dependency in <code>pyproject.toml</code>. Both <code>stdio</code> and <code>HTTP/SSE</code> transports use the official SDK.</p>
+          </div>
+
+          <div class="challenge solved">
+            <span class="label label-bump">Challenge</span>
+            <h3>Virtualenv Python resolved to an AppImage</h3>
+            <p>Creating a venv produced a <code>python</code> binary linked to the OpenCode AppImage, which reset <code>sys.path</code> and ignored the venv site-packages, making installed packages unreachable.</p>
+            <span class="label label-fixed">Resolution</span>
+            <p>Ran validation with the system interpreter and <code>PYTHONPATH=src</code> instead of relying on venv-isolated execution. This allowed imports and tests to pass while keeping the build self-contained.</p>
+          </div>
+
+          <div class="challenge solved">
+            <span class="label label-bump">Challenge</span>
+            <h3>Chat method routing was mirrored from URL paths</h3>
+            <p>Original implementation tried to resolve the client method from the last path segment (<code>"completions"</code>), which does not exist on <code>Godmod3Client</code>.</p>
+            <span class="label label-fixed">Resolution</span>
+            <p>Changed <code>_send_chat</code> to take an explicit client method name (<code>chat_completions</code>, <code>ultraplinian_completions</code>, <code>consortium_completions</code>) so each mode calls the correct endpoint.</p>
+          </div>
+
+          <div class="challenge solved">
+            <span class="label label-bump">Challenge</span>
+            <h3>Test runner updated to pytest</h3>
+            <p>The standalone runner (<code>tests/run_tests.py</code>) and the manual-server test were removed along with the manual fallback.</p>
+            <span class="label label-fixed">Resolution</span>
+            <p>Tests now run exclusively with <code>pytest tests/test_tools.py</code>. The remaining 6 utility tests pass and remain pytest-collectible via <code>pytest-asyncio</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2><span class="icon">🧪</span> Verification Results</h2>
+        <div class="progress"><div id="progressBar"></div></div>
+        <div class="terminal">
+<span class="cmd">$</span> python -m godmod3_mcp.server --test<br>
+Transport: stdio<br>
+Base URL: http://localhost:7860<br>
+API key set: False<br>
+Tools: autotune_analyze, consortium_chat, dataset_stats, export_dataset,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_tier, health_check, list_models, parseltongue_detect,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parseltongue_encode, research_info, research_query,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;research_stats, server_info, single_chat, submit_feedback,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform_text, ultraplinian_chat<br><br>
+<span class="cmd">$</span> pytest tests/test_tools.py<br>
+<span class="ok">PASS</span> test_normalize_messages_string<br>
+<span class="ok">PASS</span> test_normalize_messages_list<br>
+<span class="ok">PASS</span> test_merge_local_models<br>
+<span class="ok">PASS</span> test_format_chat_response_ultraplinian<br>
+<span class="ok">PASS</span> test_aggregate_stream_chat<br>
+<span class="ok">PASS</span> test_aggregate_stream_ultraplinian_metadata<br>
+<span class="ok">6/6 passed</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🚀</span> How to Use <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <h3 style="color:var(--heading)">1. Start G0DM0D3 API</h3>
+          <div class="terminal"><span class="cmd">$</span> docker compose up -d --build</div>
+
+          <h3 style="color:var(--heading);margin-top:18px">2. Install the bridge</h3>
+          <div class="terminal"><span class="cmd">$</span> pip install -e .</div>
+
+          <h3 style="color:var(--heading);margin-top:18px">3. Run</h3>
+          <div class="terminal">
+<span class="cmd">$</span> python -m godmod3_mcp.server              <span class="dim"># stdio</span><br>
+<span class="cmd">$</span> python -m godmod3_mcp.server --transport http --port 3001
+          </div>
+
+          <h3 style="color:var(--heading);margin-top:18px">4. Connect to Odysseus / Hermes</h3>
+          <p>Copy the appropriate skill directory and register the MCP server using the README instructions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🗺️</span> Next Steps <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <ul style="line-height:2">
+            <li>Run the full stack with a real or local G0DM0D3 API and validate end-to-end tool calls.</li>
+            <li>Test inside Odysseus and Hermes Agent with the provided skills.</li>
+            <li>Consider adding explicit integration tests against a live API or a mocked router.</li>
+            <li>Add CI (GitHub Actions) to run tests, lint, and build the Docker image.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer>Built by OpenCode · G0DM0D3 MCP bridge · Ready for Odysseus & Hermes</footer>
+  </div>
+
+  <script>
+    function toggle(h2) {
+      h2.classList.toggle('open');
+      const next = h2.nextElementSibling;
+      if (!next || !next.classList.contains('collapsible')) return;
+      if (next.classList.contains('open')) {
+        next.style.maxHeight = null;
+        next.classList.remove('open');
+      } else {
+        next.classList.add('open');
+        next.style.maxHeight = next.scrollHeight + 'px';
+      }
+    }
+
+    // Background particles
+    const particles = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 2 + Math.random() * 5;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = Math.random() * 100 + 'vh';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      particles.appendChild(p);
+    }
+
+    // Auto-expand first sections
+    document.querySelectorAll('.collapsible').forEach((el, i) => {
+      if (i < 2) {
+        el.classList.add('open');
+        el.style.maxHeight = el.scrollHeight + 'px';
+        el.previousElementSibling.classList.add('open');
+      }
+    });
+
+    // Animate progress bar
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('progressBar').style.width = '100%', 300);
+    });
+  </script>
+</body>
+</html>

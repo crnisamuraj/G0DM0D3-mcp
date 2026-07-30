@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "godmod3-mcp"
+version = "0.1.0"
+description = "MCP bridge for G0DM0D3 with Odysseus and Hermes Agent skills"
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+requires-python = ">=3.10"
+authors = [
+    { name = "OpenCode" },
+]
+keywords = ["mcp", "g0dm0d3", "odysseus", "hermes", "llm", "multi-model"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "httpx>=0.27",
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+godmod3-mcp = "godmod3_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/elder-plinius/G0DM0D3"
+Repository = "https://github.com/elder-plinius/G0DM0D3"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/godmod3_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/skills",
+    "/tests",
+    "/Dockerfile",
+    "/docker-compose.yml",
+    "/.env.example",
+    "/README.md",
+    "/plan.md",
+    "/plan.html",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

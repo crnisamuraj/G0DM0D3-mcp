@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G0DM0D3 MCP Plan — Interactive</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #1f2833;
+      --text: #c5c6c7;
+      --heading: #66fcf1;
+      --accent: #45a29e;
+      --accent2: #f7b801;
+      --danger: #ff6b6b;
+      --success: #4ade80;
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    /* animated background particles */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .25;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--heading);
+      animation: float 18s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: .25; }
+      50% { transform: translateY(-60px) translateX(30px); opacity: .55; }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      border-bottom: 2px solid rgba(102, 252, 241, 0.2);
+      margin-bottom: 38px;
+      animation: fadeInDown 1s ease both;
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 6vw, 3.4rem);
+      color: var(--heading);
+      margin: 0 0 12px;
+      text-shadow: 0 0 22px rgba(102, 252, 241, .35);
+      letter-spacing: -1px;
+    }
+
+    .tagline {
+      font-size: 1.15rem;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(69, 162, 158, .15);
+      border: 1px solid var(--accent);
+      color: var(--heading);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .9rem;
+      animation: pulse 2.5s infinite;
+    }
+    .dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(102, 252, 241, .25); }
+      50% { box-shadow: 0 0 16px 4px rgba(102, 252, 241, .15); }
+    }
+
+    section { margin-bottom: 34px; animation: fadeInUp .9s ease both; }
+    section:nth-child(3) { animation-delay: .1s; }
+    section:nth-child(4) { animation-delay: .2s; }
+    section:nth-child(5) { animation-delay: .3s; }
+    section:nth-child(6) { animation-delay: .4s; }
+    section:nth-child(7) { animation-delay: .5s; }
+    section:nth-child(8) { animation-delay: .6s; }
+
+    h2 {
+      color: var(--heading);
+      font-size: 1.55rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .icon { font-size: 1.3rem; }
+
+    .card {
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px var(--shadow);
+      border: 1px solid rgba(102, 252, 241, .08);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+
+    .collapsible { max-height: 0; overflow: hidden; transition: max-height .45s ease, opacity .35s ease; opacity: 0; }
+    .collapsible.open { opacity: 1; }
+
+    .toggle { margin-left: auto; font-size: .85rem; color: var(--accent); transition: transform .3s ease; }
+    h2.open .toggle { transform: rotate(180deg); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+
+    .chip {
+      background: rgba(102, 252, 241, .08);
+      border: 1px solid rgba(102, 252, 241, .22);
+      border-radius: 12px;
+      padding: 14px;
+      transition: background .2s ease;
+    }
+    .chip:hover { background: rgba(102, 252, 241, .16); }
+    .chip strong { color: var(--heading); display: block; margin-bottom: 4px; }
+    .chip small { color: var(--accent2); font-weight: 600; }
+
+    table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(102, 252, 241, .1); }
+    th { color: var(--heading); background: rgba(102, 252, 241, .06); }
+    tr:hover td { background: rgba(102, 252, 241, .04); }
+    code { background: rgba(0,0,0,.35); padding: 3px 7px; border-radius: 6px; color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-size: .86em; }
+
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 0;
+    }
+    .flow-box {
+      background: linear-gradient(135deg, rgba(102,252,241,.12), rgba(69,162,158,.12));
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 18px 28px;
+      text-align: center;
+      min-width: 220px;
+      position: relative;
+      animation: popIn .7s ease both;
+    }
+    .flow-arrow { font-size: 1.6rem; color: var(--heading); animation: bounce 1.8s infinite; }
+
+    .progress { height: 8px; background: rgba(255,255,255,.08); border-radius: 999px; margin: 12px 0 18px; overflow: hidden; }
+    .progress > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--heading), var(--accent2)); border-radius: 999px; transition: width 1.2s ease; }
+
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform .15s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: scale(1.03); box-shadow: 0 0 18px rgba(102,252,241,.35); }
+
+    .checklist label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      cursor: pointer;
+      transition: color .2s ease;
+    }
+    .checklist input { accent-color: var(--heading); width: 18px; height: 18px; }
+    .checklist label.done { color: var(--success); text-decoration: line-through; }
+    .checklist label:hover { color: #fff; }
+
+    footer { text-align: center; margin-top: 50px; color: var(--accent); font-size: .9rem; }
+
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes popIn { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles"></div>
+
+  <div class="wrap">
+    <header>
+      <h1>🜏 G0DM0D3 MCP Plan</h1>
+      <div class="tagline">Build the bridge. Free the models. Use them in Odysseus & Hermes.</div>
+      <div class="status-pill"><span class="dot"></span> Status: Build mode activated</div>
+    </header>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🎯</span> Goal <span class="toggle">▾</span></h2>
+        <div class="collapsible open">
+          <p>Expose the full G0DM0D3 feature set inside <strong>Odysseus</strong> and <strong>Hermes Agent</strong> via a Python MCP server that delegates <strong>100%</strong> to a self-hosted G0DM0D3 API instance, plus dedicated skills for each agent.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🏗️</span> Architecture <span class="toggle">▾</span></h2>
+        <div class="collapsible open">
+          <div class="flow">
+            <div class="flow-box">Odysseus / Hermes Agent</div>
+            <div class="flow-arrow">⇣</div>
+            <div class="flow-box">MCP (stdio or HTTP/SSE)</div>
+            <div class="flow-arrow">⇣</div>
+            <div class="flow-box"><strong>godmod3-mcp</strong><br>Python MCP bridge</div>
+            <div class="flow-arrow">⇣</div>
+            <div class="flow-box"><strong>godmod3-api</strong><br>Node/Express (G0DM0D3)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">⚙️</span> Defaults <span class="toggle">▾</span></h2>
+        <div class="collapsible open">
+          <div class="grid-2">
+            <div class="chip"><strong>GODMOD3_BASE_URL</strong><code>http://localhost:7860</code></div>
+            <div class="chip"><strong>GODMOD3_API_KEY</strong><code>(none)</code></div>
+            <div class="chip"><strong>GODMOD3_MCP_TRANSPORT</strong><code>stdio</code></div>
+            <div class="chip"><strong>GODMOD3_MCP_HTTP_PORT</strong><code>3001</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🛠️</span> MCP Tools <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <table>
+            <thead><tr><th>Tool</th><th>Endpoint</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><code>ultraplinian_chat</code></td><td>POST /v1/ultraplinian/completions</td><td>Multi-model race, liquid response</td></tr>
+              <tr><td><code>consortium_chat</code></td><td>POST /v1/consortium/completions</td><td>Hive-mind synthesis</td></tr>
+              <tr><td><code>single_chat</code></td><td>POST /v1/chat/completions</td><td>Single model + GODMODE pipeline</td></tr>
+              <tr><td><code>autotune_analyze</code></td><td>POST /v1/autotune/analyze</td><td>Tune params for context</td></tr>
+              <tr><td><code>parseltongue_encode</code></td><td>POST /v1/parseltongue/encode</td><td>Obfuscate triggers</td></tr>
+              <tr><td><code>parseltongue_detect</code></td><td>POST /v1/parseltongue/detect</td><td>Detect triggers</td></tr>
+              <tr><td><code>transform_text</code></td><td>POST /v1/transform</td><td>STM modules</td></tr>
+              <tr><td><code>submit_feedback</code></td><td>POST /v1/feedback</td><td>EMA learning</td></tr>
+              <tr><td><code>server_info</code></td><td>GET /v1/info</td><td></td></tr>
+              <tr><td><code>list_models</code></td><td>GET /v1/models</td><td></td></tr>
+              <tr><td><code>get_tier</code></td><td>GET /v1/tier</td><td></td></tr>
+              <tr><td><code>health_check</code></td><td>GET /v1/health</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🏠</span> Local Support <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <p>Chat tools accept <code>local_model_url</code>, <code>local_models</code>, and <code>provider_preference</code> so you can race Ollama, LM Studio, vLLM, or llama.cpp alongside OpenRouter/Venice.</p>
+          <div class="grid-3">
+            <div class="chip"><small>provider</small><strong>openrouter</strong></div>
+            <div class="chip"><small>provider</small><strong>venice</strong></div>
+            <div class="chip"><small>provider</small><strong>local</strong></div>
+            <div class="chip"><small>provider</small><strong>all</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🐳</span> Docker Stack <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <ul>
+            <li><strong>godmod3-api</strong> — G0DM0D3 Node/Express API on port <code>7860</code></li>
+            <li><strong>godmod3-mcp</strong> — Python MCP bridge on port <code>3001</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">🧠</span> Skills <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <div class="grid-2">
+            <div class="chip"><strong>skills/odysseus/godmod3/SKILL.md</strong>Tailored for Odysseus agents, MCP tool namespacing, plan mode.</div>
+            <div class="chip"><strong>skills/hermes/godmod3/SKILL.md</strong>Tailored for Hermes Agent, <code>/godmod3</code> skill invocation, tool gateway.</div>
+          </div>
+          <p style="margin-top:14px">Both teach: ULTRAPLINIAN vs CONSORTIUM vs single chat, tier selection, Parseltongue, STM, local-only mode, and feedback.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2><span class="icon">📦</span> Files to Create</h2>
+        <div class="progress"><div id="progressBar"></div></div>
+        <div id="fileList" class="grid-3"></div>
+        <button class="btn" onclick="animateProgress()">Simulate build progress</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 onclick="toggle(this)"><span class="icon">✅</span> Verification <span class="toggle">▾</span></h2>
+        <div class="collapsible">
+          <div class="checklist">
+            <label><input type="checkbox"><span>Start godmod3-api</span></label>
+            <label><input type="checkbox"><span>Run stdio bridge</span></label>
+            <label><input type="checkbox"><span>Run HTTP/SSE bridge</span></label>
+            <label><input type="checkbox"><span>Add to Odysseus MCP</span></label>
+            <label><input type="checkbox"><span>Add to Hermes MCP</span></label>
+            <label><input type="checkbox"><span>Run pytest</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>Built for neurodivergent builders — big cards, clear steps, one thing at a time.</footer>
+  </div>
+
+  <script>
+    function toggle(h2) {
+      h2.classList.toggle('open');
+      const next = h2.nextElementSibling;
+      if (!next || !next.classList.contains('collapsible')) return;
+      if (next.classList.contains('open')) {
+        next.style.maxHeight = null;
+        next.classList.remove('open');
+      } else {
+        next.classList.add('open');
+        next.style.maxHeight = next.scrollHeight + 'px';
+      }
+    }
+
+    const files = [
+      'src/godmod3_mcp/server.py',
+      'src/godmod3_mcp/client.py',
+      'src/godmod3_mcp/config.py',
+      'src/godmod3_mcp/tools.py',
+      'src/godmod3_mcp/utils.py',
+      'src/godmod3_mcp/transports.py',
+      'pyproject.toml',
+      'requirements.txt',
+      'Dockerfile',
+      'docker-compose.yml',
+      '.env.example',
+      'tests/test_tools.py',
+      'skills/odysseus/godmod3/SKILL.md',
+      'skills/hermes/godmod3/SKILL.md',
+      'README.md',
+      'plan.html',
+    ];
+
+    const list = document.getElementById('fileList');
+    files.forEach((f, i) => {
+      const div = document.createElement('div');
+      div.className = 'chip';
+      div.style.animationDelay = (i * 60) + 'ms';
+      div.innerHTML = `<code>${f}</code>`;
+      list.appendChild(div);
+    });
+
+    function animateProgress() {
+      const bar = document.getElementById('progressBar');
+      bar.style.width = '0%';
+      setTimeout(() => bar.style.width = '100%', 50);
+    }
+
+    // Checklist strikethrough
+    document.querySelectorAll('.checklist input').forEach(cb => {
+      cb.addEventListener('change', () => cb.closest('label').classList.toggle('done', cb.checked));
+    });
+
+    // Background particles
+    const particles = document.getElementById('particles');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 2 + Math.random() * 5;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = Math.random() * 100 + 'vh';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      particles.appendChild(p);
+    }
+
+    // Animate progress on load
+    window.addEventListener('load', () => setTimeout(animateProgress, 400));
+
+    // Auto-open first sections for ADHD scanability
+    document.querySelectorAll('.collapsible').forEach((el, i) => {
+      if (i < 3) {
+        el.classList.add('open');
+        el.style.maxHeight = el.scrollHeight + 'px';
+        el.previousElementSibling.classList.add('open');
+      }
+    });
+  </script>
+</body>
+</html>
