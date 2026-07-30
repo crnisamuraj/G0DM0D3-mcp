@@ -5,7 +5,7 @@ WORKDIR /app
 # Install uv for fast dependency resolution (optional but nice)
 RUN pip install --no-cache-dir uv
 
-COPY pyproject.toml requirements.txt ./
+COPY pyproject.toml requirements.txt README.md ./
 RUN uv pip install --system --no-cache -e .
 
 COPY src ./src
