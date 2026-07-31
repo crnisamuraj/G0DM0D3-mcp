@@ -6,9 +6,8 @@ WORKDIR /app
 RUN pip install --no-cache-dir uv
 
 COPY pyproject.toml requirements.txt README.md ./
-RUN uv pip install --system --no-cache -e .
-
 COPY src ./src
+RUN uv pip install --system --no-cache -e .
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
