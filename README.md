@@ -29,6 +29,17 @@ The API is available at `http://localhost:7860` from the host and at `http://god
 
 > **Note:** The upstream G0DM0D3 API currently has a `path-to-regexp` compatibility issue (`/batch/*` route pattern). The local `Dockerfile.api` clones upstream and applies a small patch before building so the container starts correctly.
 
+### Avoid upstream rate limits
+
+By default the API runs in **Free tier** mode: 5 total requests, 10/min, 50/day. To get unlimited local use, set a tier key in `.env`:
+
+```bash
+GODMODE_API_KEY=my-local-key-123
+GODMODE_TIER_KEYS=enterprise:my-local-key-123
+```
+
+Then pass the same key to the bridge via `GODMOD3_API_KEY`. Restart the API container to apply.
+
 #### 2. Install the bridge locally for Hermes (stdio)
 
 ```bash

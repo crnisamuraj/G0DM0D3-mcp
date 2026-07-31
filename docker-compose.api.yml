@@ -26,6 +26,7 @@ services:
     environment:
       - PORT=7860
       - GODMODE_API_KEY=${GODMODE_API_KEY:-}
+      - GODMODE_TIER_KEYS=${GODMODE_TIER_KEYS:-}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
       - HF_TOKEN=${HF_TOKEN:-}
       - HF_DATASET_REPO=${HF_DATASET_REPO:-}

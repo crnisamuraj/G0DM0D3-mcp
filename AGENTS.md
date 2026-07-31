@@ -124,6 +124,18 @@ docker compose up -d --build
 
 `docker-compose.api.yml` uses the local `Dockerfile.api` instead of building directly from the upstream repo. The upstream API currently uses an Express route pattern (`/batch/*`) that is incompatible with recent `path-to-regexp` versions, causing the container to crash on startup. `Dockerfile.api` clones the upstream source and applies a compatibility patch before building.
 
+### Avoiding upstream rate limits
+
+The upstream API defaults to the **Free tier** (5 total requests, 10/min, 50/day). To use unlimited **Enterprise** tier locally, set an API key and assign it to the enterprise tier in `.env`:
+
+```bash
+GODMODE_API_KEY=my-local-key-123
+GODMODE_TIER_KEYS=enterprise:my-local-key-123
+GODMOD3_API_KEY=my-local-key-123
+```
+
+Then restart the API container. The bridge sends `GODMOD3_API_KEY` as the bearer token, and the upstream API maps it to the Enterprise tier via `GODMODE_TIER_KEYS`.
+
 ## Configuration
 
 Configuration is loaded exclusively from environment variables in `src/godmod3_mcp/config.py` (`Config.from_env()`). CLI flags override environment values for transport and port.
