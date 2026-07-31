@@ -169,6 +169,51 @@ cp -r skills/hermes/godmod3 ~/.hermes/skills/
 
 Then invoke with `/godmod3`.
 
+## Connect other MCP clients (Claude Code, Codex, Cursor, Kimi Code)
+
+The bridge is a standard MCP server. Any MCP-compatible client can connect via stdio or HTTP/SSE.
+
+### HTTP/SSE (recommended for shared access)
+
+```json
+{
+  "mcpServers": {
+    "godmod3": {
+      "url": "http://localhost:3001/sse"
+    }
+  }
+}
+```
+
+### stdio
+
+```json
+{
+  "mcpServers": {
+    "godmod3": {
+      "command": "/home/vudu/.venv/godmod3-mcp/bin/godmod3-mcp",
+      "env": {
+        "GODMOD3_BASE_URL": "http://localhost:7860",
+        "GODMOD3_API_KEY": "optional-key"
+      }
+    }
+  }
+}
+```
+
+### Client-specific skill files
+
+Copy the appropriate skill file into your client config:
+
+| Client | File | Typical location |
+|---|---|---|
+| Claude Code | `skills/claude-code/CLAUDE.md` | Project root or `~/.claude/CLAUDE.md` |
+| Cursor | `skills/cursor/.cursorrules` | Project root |
+| Codex | `skills/codex/CODEX.md` | Project root or Codex config |
+| Generic / Kimi Code | `skills/generic-mcp/SKILL.md` | Use as system prompt or skill |
+
+These files explain when and how to use the G0DM0D3 tools in each client.
+
 ## Local model support
 
 Pass `local_model_url` and `local_models` to any chat tool:

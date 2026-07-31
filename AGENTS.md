@@ -38,7 +38,11 @@ The package supports both `stdio` and `HTTP/SSE` MCP transports using the offici
 │   └── transports.py         # FastMCP server bootstrap with lifespan-managed client
 ├── skills/
 │   ├── odysseus/godmod3/SKILL.md   # Odysseus-specific skill instructions
-│   └── hermes/godmod3/SKILL.md     # Hermes Agent-specific skill instructions
+│   ├── hermes/godmod3/SKILL.md     # Hermes Agent-specific skill instructions
+│   ├── generic-mcp/SKILL.md        # Generic instructions for any MCP client
+│   ├── claude-code/CLAUDE.md       # Claude Code project instructions
+│   ├── cursor/.cursorrules         # Cursor rules
+│   └── codex/CODEX.md              # Codex system prompt
 ├── tests/
 │   ├── test_tools.py         # pytest-compatible async unit tests
 │   └── conftest.py           # Test helpers (make_config, run_async, run_sync)
@@ -168,6 +172,17 @@ python -m godmod3_mcp.server --test
 ```
 
 This prints the selected transport, the configured base URL, whether an API key is set, and the list of registered tools.
+
+## Multi-client skill files
+
+In addition to the Hermes and Odysseus skills, the repo includes generic instructions for other MCP clients under `skills/`:
+
+- `skills/generic-mcp/SKILL.md` — usable with any MCP client
+- `skills/claude-code/CLAUDE.md` — Claude Code project instructions
+- `skills/cursor/.cursorrules` — Cursor rules
+- `skills/codex/CODEX.md` — Codex system prompt
+
+When adding or changing tool behavior, update all relevant skill files so instructions stay consistent across clients.
 
 ## Code style guidelines
 
