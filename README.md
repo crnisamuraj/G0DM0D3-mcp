@@ -27,6 +27,8 @@ docker compose -f docker-compose.api.yml up -d --build
 
 The API is available at `http://localhost:7860` from the host and at `http://godmod3-api:7860` from containers on the shared `godmod3` network.
 
+> **Note:** The upstream G0DM0D3 API currently has a `path-to-regexp` compatibility issue (`/batch/*` route pattern). The local `Dockerfile.api` clones upstream and applies a small patch before building so the container starts correctly.
+
 #### 2. Install the bridge locally for Hermes (stdio)
 
 ```bash

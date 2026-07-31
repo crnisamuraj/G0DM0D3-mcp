@@ -9,12 +9,17 @@
 #
 # The API is reachable from the host at http://localhost:7860 and from
 # other containers on the shared `godmod3` network at http://godmod3-api:7860.
+#
+# NOTE: We build from a local Dockerfile.api instead of directly from the
+# upstream repo because the upstream API currently uses Express route
+# patterns that are incompatible with recent path-to-regexp versions.
+# The local Dockerfile clones upstream and applies a compatibility patch.
 
 services:
   godmod3-api:
     build:
-      context: https://github.com/elder-plinius/G0DM0D3.git#main
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.api
     container_name: godmod3-api
     ports:
       - "7860:7860"

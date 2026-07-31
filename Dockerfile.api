@@ -1,0 +1,39 @@
+# Local Dockerfile for the upstream G0DM0D3 API.
+#
+# This clones the upstream G0DM0D3 repo and applies a small patch for
+# path-to-regexp compatibility (see api/routes/research.ts route fix).
+# Used by docker-compose.api.yml instead of building directly from the
+# upstream Dockerfile.
+
+FROM node:20-slim
+
+WORKDIR /app
+
+# Install git so we can clone the upstream repo during the build.
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates curl && rm -rf /var/lib/apt/lists/*
+
+# Clone upstream G0DM0D3 and copy it into /app.
+ARG G0DM0D3_REF=main
+RUN git clone --depth 1 --branch ${G0DM0D3_REF} https://github.com/elder-plinius/G0DM0D3.git /tmp/g0dm0d3 \
+    && cp -a /tmp/g0dm0d3/. /app \
+    && rm -rf /tmp/g0dm0d3
+
+# Patch: path-to-regexp >= 8 does not support bare '*' wildcards.
+# Replace '/batch/*' with '/batch/:splat*' in research routes.
+RUN sed -i 's|/batch/\*|/batch/:splat*|g' /app/api/routes/research.ts \
+    && grep -n "/batch/" /app/api/routes/research.ts
+
+# Same build steps as the upstream Dockerfile.
+RUN npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+
+RUN addgroup --system app && adduser --system --ingroup app app
+
+ENV PORT=7860
+EXPOSE 7860
+
+USER app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+    CMD curl -f http://localhost:7860/v1/health || exit 1
+
+CMD ["npx", "tsx", "api/server.ts"]
