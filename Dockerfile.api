@@ -19,8 +19,8 @@ RUN git clone --depth 1 --branch ${G0DM0D3_REF} https://github.com/elder-plinius
     && rm -rf /tmp/g0dm0d3
 
 # Patch: path-to-regexp >= 8 does not support bare '*' wildcards.
-# Replace '/batch/*' with '/batch/(.*)' in research routes.
-RUN sed -i 's|/batch/\*|/batch/(.*)|g' /app/api/routes/research.ts \
+# Replace '/batch/*' with '/batch/{*splat}' in research routes.
+RUN sed -i 's|/batch/\*|/batch/{*splat}|g' /app/api/routes/research.ts \
     && grep -n "/batch/" /app/api/routes/research.ts
 
 # Same build steps as the upstream Dockerfile.
