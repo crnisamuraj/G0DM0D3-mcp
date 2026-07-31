@@ -83,8 +83,10 @@ async def _run_stdio() -> None:
 async def _run_http(port: int) -> None:
     mcp = build_mcp_server("godmod3")
     _attach_tools(mcp)
-    logger.info("Starting G0DM0D3 MCP HTTP/SSE server on port %s", port)
-    await mcp.run_sse_async(port=port)
+    mcp.settings.port = port
+    mcp.settings.host = "0.0.0.0"
+    logger.info("Starting G0DM0D3 MCP HTTP/SSE server on %s:%s", mcp.settings.host, port)
+    await mcp.run_sse_async()
 
 
 def main(argv: list[str] | None = None) -> int:
