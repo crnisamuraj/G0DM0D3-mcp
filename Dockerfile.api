@@ -1,7 +1,9 @@
 # Local Dockerfile for the upstream G0DM0D3 API.
 #
-# This clones the upstream G0DM0D3 repo and applies a small patch for
-# path-to-regexp compatibility (see api/routes/research.ts route fix).
+# This clones the upstream G0DM0D3 repo and applies small compatibility
+# patches before building:
+#   - path-to-regexp >= 8 does not support bare '*' wildcards.
+#   - ULTRAPLINIAN_MODELS has no 'full' tier; expand to all defined tiers.
 # Used by docker-compose.api.yml instead of building directly from the
 # upstream Dockerfile.
 
@@ -22,6 +24,13 @@ RUN git clone --depth 1 --branch ${G0DM0D3_REF} https://github.com/elder-plinius
 # Replace '/batch/*' with '/batch/{*splat}' in research routes.
 RUN sed -i 's|/batch/\*|/batch/{*splat}|g' /app/api/routes/research.ts \
     && grep -n "/batch/" /app/api/routes/research.ts
+
+# Patch: ULTRAPLINIAN_MODELS has no 'full' tier. Expand the /v1/models list
+# to all defined tiers so list_models does not throw "full is not iterable".
+RUN perl -0777 -i -pe \
+    's/(\s*const allModels = \[\s*)\.\.\.ULTRAPLINIAN_MODELS\.fast,\s*\.\.\.ULTRAPLINIAN_MODELS\.standard,\s*\.\.\.ULTRAPLINIAN_MODELS\.full,/$1...ULTRAPLINIAN_MODELS.fast,\n    ...ULTRAPLINIAN_MODELS.standard,\n    ...ULTRAPLINIAN_MODELS.smart,\n    ...ULTRAPLINIAN_MODELS.power,\n    ...ULTRAPLINIAN_MODELS.ultra,/s' \
+    /app/api/server.ts \
+    && grep -n "ULTRAPLINIAN_MODELS" /app/api/server.ts
 
 # Same build steps as the upstream Dockerfile.
 RUN npm ci --omit=dev 2>/dev/null || npm install --omit=dev

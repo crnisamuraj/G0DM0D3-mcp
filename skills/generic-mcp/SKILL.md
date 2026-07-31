@@ -1,3 +1,10 @@
+---
+name: godmod3
+description: Invoke the G0DM0D3 multi-model API from any MCP-compatible client.
+type: prompt
+whenToUse: When the user wants to call the G0DM0D3 API for multi-model racing, consensus synthesis, single-model chat, text transformation, or parseltongue obfuscation.
+---
+
 # G0DM0D3 MCP Skill (Generic)
 
 Use this skill in any MCP-compatible client (Claude Code, Codex, Cursor, Kimi Code, OpenCode, etc.) to invoke the G0DM0D3 multi-model API.
