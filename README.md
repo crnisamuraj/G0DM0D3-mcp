@@ -89,6 +89,8 @@ This is equivalent to starting both `docker-compose.api.yml` and `docker-compose
 | `GODMOD3_API_KEY` | *(none)* | Bearer token if API requires auth |
 | `GODMOD3_MCP_TRANSPORT` | `stdio` | `stdio`, `http`, or `sse` |
 | `GODMOD3_MCP_HTTP_PORT` | `3001` | HTTP/SSE listen port |
+| `GODMOD3_MCP_ALLOWED_HOSTS` | *(none)* | Comma-separated allowed HTTP `Host` header patterns for the HTTP/SSE transport (e.g. `godmod3-mcp-http:*`) |
+| `GODMOD3_MCP_DISABLE_DNS_REBINDING_PROTECTION` | `false` | Set to `true` to disable MCP SDK Host-header validation (only in trusted networks) |
 
 ## MCP Tools
 

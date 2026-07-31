@@ -152,6 +152,8 @@ Configuration is loaded exclusively from environment variables in `src/godmod3_m
 | `GODMOD3_MCP_HTTP_PORT` | `3001` | HTTP/SSE listen port |
 | `GODMOD3_TIMEOUT` | `120` | Request timeout in seconds |
 | `GODMOD3_LOG_LEVEL` | `INFO` | Python logging level |
+| `GODMOD3_MCP_ALLOWED_HOSTS` | *(none)* | Comma-separated allowed HTTP `Host` header patterns for the HTTP/SSE transport (e.g. `godmod3-mcp-http:*`) |
+| `GODMOD3_MCP_DISABLE_DNS_REBINDING_PROTECTION` | `false` | Set to `true` to disable MCP SDK Host-header validation (only in trusted networks) |
 
 `.env.example` documents the same variables plus optional upstream keys (`OPENROUTER_API_KEY`, `HF_TOKEN`, `HF_DATASET_REPO`) that are forwarded to the G0DM0D3 API container.
 

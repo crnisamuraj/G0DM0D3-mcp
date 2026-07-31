@@ -25,6 +25,10 @@ services:
       - GODMOD3_API_KEY=${GODMOD3_API_KEY:-}
       - GODMOD3_MCP_TRANSPORT=http
       - GODMOD3_MCP_HTTP_PORT=3001
+      # Allow Odysseus and other containers on the godmod3 network to reach the
+      # SSE endpoint by the bridge container name. The MCP SDK rejects non-local
+      # Host headers by default as DNS rebinding protection.
+      - GODMOD3_MCP_ALLOWED_HOSTS=godmod3-mcp-http:*
     command: ["--transport", "http", "--port", "3001"]
     restart: unless-stopped
     networks:

@@ -16,6 +16,8 @@ class Config:
     http_port: int
     timeout: float
     log_level: str
+    mcp_allowed_hosts: list[str]
+    mcp_disable_dns_rebinding_protection: bool
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -36,6 +38,18 @@ class Config:
         except ValueError:
             timeout = 120.0
 
+        allowed_hosts_raw = os.environ.get("GODMOD3_MCP_ALLOWED_HOSTS", "")
+        mcp_allowed_hosts = [
+            host.strip()
+            for host in allowed_hosts_raw.split(",")
+            if host.strip()
+        ]
+
+        disable_dns_rebinding = (
+            os.environ.get("GODMOD3_MCP_DISABLE_DNS_REBINDING_PROTECTION", "").lower().strip()
+            in {"1", "true", "yes", "on"}
+        )
+
         return cls(
             base_url=(os.environ.get("GODMOD3_BASE_URL") or "http://localhost:7860").rstrip("/"),
             api_key=os.environ.get("GODMOD3_API_KEY") or None,
@@ -43,6 +57,8 @@ class Config:
             http_port=http_port,
             timeout=timeout,
             log_level=(os.environ.get("GODMOD3_LOG_LEVEL") or "INFO").upper(),
+            mcp_allowed_hosts=mcp_allowed_hosts,
+            mcp_disable_dns_rebinding_protection=disable_dns_rebinding,
         )
 
     @property

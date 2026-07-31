@@ -16,6 +16,8 @@ def make_config(**overrides: Any) -> Config:
         "http_port": 3001,
         "timeout": 30.0,
         "log_level": "INFO",
+        "mcp_allowed_hosts": [],
+        "mcp_disable_dns_rebinding_protection": False,
     }
     defaults.update(overrides)
     return Config(**defaults)
