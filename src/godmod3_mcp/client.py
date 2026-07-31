@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from json import JSONDecodeError, loads
 import logging
 from typing import Any, AsyncIterator
 
@@ -127,7 +128,7 @@ class Godmod3Client:
         response = await self._raw_request(method, path, auth=auth, params=params, json=json)
         try:
             return response.json()
-        except json.JSONDecodeError as exc:
+        except JSONDecodeError as exc:
             raise Godmod3ClientError(f"Non-JSON response from {path}: {response.text[:200]}") from exc
 
     async def _raw_request(
@@ -178,8 +179,8 @@ class Godmod3Client:
                 if line.startswith("data: "):
                     data = line[6:]
                     try:
-                        event = json.loads(data)
-                    except json.JSONDecodeError:
+                        event = loads(data)
+                    except JSONDecodeError:
                         event = {"_raw": data}
                     yield event
 
