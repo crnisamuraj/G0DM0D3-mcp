@@ -214,6 +214,55 @@ async def consortium_chat(
 # Utilities
 # ---------------------------------------------------------------------------
 
+async def coding_chat(
+    prompt: str | list[dict[str, str]],
+    engine: str = "ultraplinian",
+    tier: str = "standard",
+    parseltongue_intensity: str = "high",
+    model: str | None = None,
+    stream: bool = True,
+    max_tokens: int = 4096,
+    contribute_to_dataset: bool = False,
+    ctx: Context | None = None,
+) -> str:
+    """Optimized coding assistant with heavy obfuscation and direct-mode STM.
+
+    Defaults are tuned for tasks where a single frontier model might refuse or
+    hedge: multi-model racing or consensus, GODMODE, AutoTune, leetspeak
+    parseltongue, and hedge-reducing STM modules.
+    """
+    assert ctx is not None
+    client: Godmod3Client = ctx.request_context.lifespan_context["client"]
+
+    messages = normalize_messages(prompt)
+    payload = _build_chat_payload(
+        messages=messages,
+        stream=stream,
+        max_tokens=max_tokens,
+        godmode=True,
+        autotune=True,
+        strategy="adaptive",
+        parseltongue=True,
+        parseltongue_technique="leetspeak",
+        parseltongue_intensity=parseltongue_intensity,
+        stm_modules=["hedge_reducer", "direct_mode"],
+        contribute_to_dataset=contribute_to_dataset,
+    )
+
+    engine = engine.lower()
+    if engine == "ultraplinian":
+        payload["tier"] = tier
+        payload["liquid_min_delta"] = 8
+        return await _send_chat(client, "ultraplinian_completions", payload, stream, "ultraplinian")
+    if engine == "consortium":
+        payload["tier"] = tier
+        payload["orchestrator_model"] = model or "anthropic/claude-sonnet-4.6"
+        return await _send_chat(client, "consortium_completions", payload, stream, "consortium")
+
+    payload["model"] = model or "nousresearch/hermes-4-70b"
+    return await _send_chat(client, "chat_completions", payload, stream, "single")
+
+
 async def autotune_analyze(
     message: str,
     conversation_history: list[dict[str, str]] | None = None,

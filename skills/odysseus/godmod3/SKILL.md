@@ -25,6 +25,7 @@ This skill is for tasks where a single model answer might be insufficient, censo
 ## Procedure
 
 1. **Choose the mode** based on your goal:
+   - `coding_chat` — **recommended for coding tasks**. Pre-tuned wrapper around ULTRAPLINIAN/CONSORTIUM with high-intensity parseltongue, GODMODE, and direct-mode STM.
    - `ultraplinian_chat` — fastest best single answer from a model race.
    - `consortium_chat` — slower (~30-60s), consensus-grounded synthesis.
    - `single_chat` — direct completion with GODMODE/AutoTune/Parseltongue/STM.
@@ -48,6 +49,30 @@ This skill is for tasks where a single model answer might be insufficient, censo
 5. **To tighten answers**, use `transform_text` with `modules=["hedge_reducer", "direct_mode"]`.
 
 6. **To improve future parameter choices**, call `submit_feedback` with the message ID, context type, rating (+1 good, -1 bad), and the params used.
+
+## Coding assistant shortcut
+
+For coding prompts, prefer `mcp__godmod3__coding_chat` over the raw chat tools. It defaults to:
+
+- `engine="ultraplinian"` (races many models)
+- `tier="standard"`
+- `parseltongue=true`, `parseltongue_technique="leetspeak"`, `parseltongue_intensity="high"`
+- `godmode=true`, `autotune=true`, `strategy="adaptive"`
+- `stm_modules=["hedge_reducer", "direct_mode"]`
+- `contribute_to_dataset=false`
+
+Override `engine="consortium"` for consensus synthesis, or lower `parseltongue_intensity` if code readability degrades.
+
+```json
+{
+  "name": "mcp__godmod3__coding_chat",
+  "arguments": {
+    "prompt": "Explain how to implement a minimal HTTP server in Python",
+    "engine": "ultraplinian",
+    "tier": "standard"
+  }
+}
+```
 
 ## Pitfalls
 

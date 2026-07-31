@@ -18,6 +18,7 @@ import sys
 from .config import Config
 from .tools import (
     autotune_analyze,
+    coding_chat,
     consortium_chat,
     dataset_stats,
     export_dataset,
@@ -50,6 +51,7 @@ def _attach_tools(mcp_server) -> None:
         single_chat,
         ultraplinian_chat,
         consortium_chat,
+        coding_chat,
         autotune_analyze,
         parseltongue_encode,
         parseltongue_detect,
